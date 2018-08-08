@@ -1,4 +1,4 @@
-rootProject.name = 'kingboy-springboot'
+rootProject.name = 'springboot-example'
 
 include 'common'
 include 'springboot-amqp-rabbitmq'
