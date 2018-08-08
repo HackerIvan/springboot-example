@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: kingboy-springboot-security
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql:///security?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+kingboy:
+  security:
+    appPage: /app-login.html
+    browerPage: /brower-login.html
+    returnType: REDIRECT_URL

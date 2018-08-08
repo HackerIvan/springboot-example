@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/saga?useSSL=false
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+  devtools:
+    restart:
+      enabled: true
+server:
+  port: 8080
+# 指定序列化工具
+axon:
+  serializer:
+    events: jackson
+    general: jackson
+    messages: jackson

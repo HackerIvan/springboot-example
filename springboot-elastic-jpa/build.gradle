@@ -1,0 +1,43 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.8.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.kingboy'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    jnaVersion = '3.0.9'
+}
+
+dependencies {
+    compile(
+            'org.springframework.boot:spring-boot-starter-data-elasticsearch',
+            "com.sun.jna:jna:$jnaVersion",
+            'org.springframework.boot:spring-boot-starter-web',
+            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
+    )
+    compile project(
+            ':common'
+    )
+    testCompile(
+            'org.springframework.boot:spring-boot-starter-test'
+    )
+
+}

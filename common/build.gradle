@@ -1,0 +1,70 @@
+group 'com.kingboy'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    orikaVersion = '1.5.2'
+    fastJsonVersion = '1.2.41'
+    lombokVersion = '1.16.18'
+    langVersion='3.7'
+    collectsVersion='3.2.2'
+    beanUtilsVersion='1.9.3'
+    ioVersion='2.6'
+}
+
+dependencies {
+
+    compile (
+        "ma.glasnost.orika:orika-core:$orikaVersion",
+        "org.projectlombok:lombok:$lombokVersion",
+        "com.alibaba:fastjson:$fastJsonVersion",
+        "org.apache.commons:commons-lang3:$langVersion",
+        "commons-collections:commons-collections:$collectsVersion",
+        "commons-beanutils:commons-beanutils:$beanUtilsVersion",
+        "commons-io:commons-io:$ioVersion"
+    )
+
+}
+
+//打包源码
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            //指定group/artifact/version信息，可以不填。默认使用项目group/name/version作为groupId/artifactId/version
+            groupId project.group
+            artifactId project.name
+            version project.version
+            //如果是war包填写components.web，如果是jar包填写components.java
+            from components.java
+
+            //配置上传源码
+            artifact sourceJar {
+                classifier "sources"
+            }
+
+        }
+    }
+    repositories {
+        maven {
+            //指定要上传的maven私服仓库
+            url = "http://jenkins.maxrocky.com:8081/repository/maxrocky/"
+            //认证用户和密码
+            credentials {
+                username 'admin'
+                password 'admin123'
+            }
+        }
+    }
+}

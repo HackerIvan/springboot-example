@@ -1,0 +1,22 @@
+@http=http://localhost:8080
+
+### 查询用户信息
+GET {{http}}/user
+
+### 使用注解方式添加用户
+POST {{http}}/user/annotation
+Content-Type: application/json
+
+{
+  "username": "king",
+  "password": "123456"
+}
+
+### 使用代码方式添加用户
+POST {{http}}/user/code
+Content-Type: application/json
+
+{
+  "username": "boy",
+  "password": "123456"
+}

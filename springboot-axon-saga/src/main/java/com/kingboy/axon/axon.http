@@ -1,0 +1,40 @@
+### 保存用户
+
+POST localhost:8080/customer/username/kingboyworld/password/123456
+
+### 存款
+
+PUT localhost:8080/customer/32dfeb62af044c1b8c1c53e1a4e204c3/deposit/200
+
+### 取款
+
+PUT localhost:8080/customer/32dfeb62af044c1b8c1c53e1a4e204c3/withdraw/100
+
+### 通过物化视图获取Customer
+
+GET localhost:8080/customer/32dfeb62af044c1b8c1c53e1a4e204c3
+
+### 通过Aggregate获取Customer
+
+GET localhost:8080/customer/query/32dfeb62af044c1b8c1c53e1a4e204c3
+
+
+###################################
+
+### 创建Order
+
+POST localhost:8080/order
+Content-Type: application/json
+
+{
+    "customerId":"32dfeb62af044c1b8c1c53e1a4e204c3",
+    "title":"风雨咒订单",
+    "ticketId":"c32ddaa1cd8c45348d4c6999c2a2821c",
+    "amount":"122"
+}
+
+### 创建Ticket
+
+POST http://localhost:8080/ticket/name/风雨咒
+
+###
