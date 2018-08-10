@@ -1,0 +1,25 @@
+package ${package.Mapper};
+
+import ${package.Entity}.${entity};
+import ${superMapperClassPackage};
+
+##将实体名转化为小驼峰
+#set ( $strEnd = ${entity.length()} )
+#set ( $first = $entity.charAt(0) )
+#set ( $first = $first.toLowerCase($first) )
+#set ( $entityName = $first + $entity.substring(1, $strEnd) )
+#set ( $lowerEntity = $entity.toLowerCase() )
+/**
+ * ${entity}存储层.
+ * <p></p>
+ *
+ * @author ${author}
+ * @since ${date} ${cfg.time}
+ */
+#if(${kotlin})
+interface ${table.mapperName} : ${superMapperClass}<${entity}>
+#else
+public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
+
+}
+#end

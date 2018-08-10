@@ -1,0 +1,82 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+
+import com.kingboy.provider.domain.dto.${lowerEntity}.${entity}DTO;
+import com.kingboy.provider.domain.vo.${lowerEntity}.${entity}VO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springframework.validation.annotation.Validated;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+##将实体名转化为小驼峰
+#set ( $strEnd = ${entity.length()} )
+#set ( $first = $entity.charAt(0) )
+#set ( $first = $first.toLowerCase($first) )
+#set ( $entityName = $first + $entity.substring(1, $strEnd) )
+#set ( $lowerEntity = $entity.toLowerCase() )
+/**
+ * ${entity}接口.
+ * <p></p>
+ *
+ * @author ${author}
+ * @since ${date} ${cfg.time}
+ */
+#if(${kotlin})
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+#else
+@Validated
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+    /**
+     * 保存${entity}.
+     * <p></p>
+     * @author KingBoy
+     * @since 2018-08-07 18:35:44
+     *
+     */
+    ${entity}VO save(@Valid ${entity}DTO ${entityName}DTO);
+
+    /**
+     * 更新${entity}, 更新不为Null的字段.
+     * <p></p>
+     * @author KingBoy
+     * @since 2018-08-07 18:36:34
+     *
+     */
+    ${entity}VO update(@Valid ${entity}DTO ${entityName}DTO);
+
+    /**
+     * 删除${entity}.
+     * <p>
+     *     根据项目配置进行硬删除或者软删除
+     * </p>
+     * @author KingBoy
+     * @since 2018-08-07 18:37:30
+     *
+     */
+    void remove(@NotNull Long id);
+
+    /**
+     * 通过ID查询${entity}.
+     * <p></p>
+     * @author KingBoy
+     * @since 2018-08-07 18:40:06
+     *
+     */
+    ${entity}VO get(@NotNull Long id);
+
+    /**
+     * 根据分页和条件进行查询.
+     * <p>
+     *     条件为空时，查询全部
+     * </p>
+     * @author KingBoy
+     * @since 2018-08-07 18:40:50
+     *
+     */
+    IPage<${entity}VO> list(IPage page, ${entity}DTO ${entityName}DTO);
+
+}
+#end

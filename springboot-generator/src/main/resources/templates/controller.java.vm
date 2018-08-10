@@ -1,0 +1,81 @@
+package ${package.Controller};
+
+import com.kingboy.provider.domain.dto.${lowerEntity}.${entity}DTO;
+import com.kingboy.provider.domain.vo.${lowerEntity}.${entity}VO;
+import com.kingboy.provider.service.${lowerEntity}.${entity}Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+import javax.annotation.Resource;
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+##将实体名转化为小驼峰
+#set ( $strEnd = ${entity.length()} )
+#set ( $first = $entity.charAt(0) )
+#set ( $first = $first.toLowerCase($first) )
+#set ( $entityName = $first + $entity.substring(1, $strEnd) )
+#set ( $lowerEntity = $entity.toLowerCase() )
+/**
+ * ${entity}控制层.
+ * <p></p>
+ *
+ * @author ${author}
+ * @since ${date} ${cfg.time}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${lowerEntity}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+
+    @Resource
+    ${entity}Service ${entityName}Service;
+
+    //如果不需要返回信息，取消return
+    @ApiOperation(value = "新增${entity}", tags = "$!{table.comment}")
+    @PostMapping
+    public ${entity}VO save(@RequestBody ${entity}DTO ${entityName}DTO) {
+        return ${entityName}Service.save(${entityName}DTO);
+    }
+
+    //如果不需要返回信息，取消return
+    @ApiOperation(value = "更新${entity}", tags = "$!{table.comment}")
+    @PutMapping
+    public ${entity}VO update(@RequestBody ${entity}DTO ${entityName}DTO) {
+        return ${entityName}Service.update(${entityName}DTO);
+    }
+
+    @ApiOperation(value = "移除${entity}", tags = "$!{table.comment}")
+    @DeleteMapping(value = "/{id}")
+    public void remove(@PathVariable Long id) {
+        ${entityName}Service.remove(id);
+    }
+
+    @ApiOperation(value = "根据ID查询${entity}", tags = "$!{table.comment}")
+    @GetMapping(value = "/{id}")
+    public ${entity}VO get(@PathVariable Long id) {
+        return ${entityName}Service.get(id);
+    }
+
+    @ApiOperation(value = "根据条件分页查询${entity}", tags = "$!{table.comment}")
+    @PostMapping(value = "/list")
+    public IPage<${entity}VO> list(@ModelAttribute Page page, @RequestBody(required = false) ${entity}DTO ${entityName}DTO) {
+        return ${entityName}Service.list(page, ${entityName}DTO);
+    }
+
+}
+
+#end

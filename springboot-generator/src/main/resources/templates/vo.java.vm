@@ -1,0 +1,105 @@
+package ${package.Entity};
+
+#foreach($pkg in ${table.importPackages})
+import ${pkg};
+#end
+import com.fasterxml.jackson.annotation.JsonFormat;
+#if(${entityLombokModel})
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+#end
+
+##将实体名转化为小驼峰
+#set ( $strEnd = ${entity.length()} )
+#set ( $first = $entity.charAt(0) )
+#set ( $first = $first.toLowerCase($first) )
+#set ( $entityName = $first + $entity.substring(1, $strEnd) )
+#set ( $lowerEntity = $entity.toLowerCase() )
+/**
+ * ${entity}视图对象.
+ * <p></p>
+ *
+ * @author ${author}
+ * @since ${date} ${cfg.time}
+ */
+#if(${entityLombokModel})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+#end
+#if(${superEntityClass})
+public class ${entity} extends ${superEntityClass}#if(${activeRecord})<${entity}>#end {
+#elseif(${activeRecord})
+public class ${entity} extends Model<${entity}> {
+#else
+public class ${entity} implements Serializable {
+#end
+
+    private static final long serialVersionUID = 1L;
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in ${table.fields})
+
+#if(${field.keyFlag})
+#set($keyPropertyName=${field.propertyName})
+#end
+#if("$!field.comment" != "")
+    /**
+     * ${field.comment}
+     */
+#end
+#if(${field.keyFlag})
+## 普通字段
+#elseif(${field.fill})
+## -----   存在字段填充设置   -----
+#end
+    #if(${field.propertyType.equals("LocalDateTime")})
+    @JsonFormat(pattern = "${cfg.dateFormat}")
+    #end
+    private ${field.propertyType} ${field.propertyName};
+#end
+## ----------  END 字段循环遍历  ----------
+
+#if(!${entityLombokModel})
+#foreach($field in ${table.fields})
+#if(${field.propertyType.equals("boolean")})
+#set($getprefix="is")
+#else
+#set($getprefix="get")
+#end
+
+    public ${field.propertyType} ${getprefix}${field.capitalName}() {
+        return ${field.propertyName};
+    }
+
+#if(${entityBuilderModel})
+    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+#else
+    public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+#end
+        this.${field.propertyName} = ${field.propertyName};
+#if(${entityBuilderModel})
+        return this;
+#end
+    }
+#end
+#end
+
+#if(${entityColumnConstant})
+#foreach($field in ${table.fields})
+    public static final String ${field.name.toUpperCase()} = "${field.name}";
+
+#end
+#end
+#if(${activeRecord})
+    @Override
+    protected Serializable pkVal() {
+#if(${keyPropertyName})
+        return this.${keyPropertyName};
+#else
+        return null;
+#end
+    }
+
+#end
+}

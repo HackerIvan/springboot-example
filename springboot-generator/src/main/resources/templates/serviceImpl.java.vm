@@ -1,0 +1,132 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.kingboy.common.utils.mapper.MapperUtils;
+import com.kingboy.provider.domain.dto.${lowerEntity}.${entity}DTO;
+import com.kingboy.provider.domain.vo.${lowerEntity}.${entity}VO;
+import com.kingboy.provider.common.exception.ExceptionManager;
+import com.kingboy.provider.common.utils.page.PageConverter;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import javax.annotation.Resource;
+
+##将实体名转化为小驼峰
+#set ( $strEnd = ${entity.length()} )
+#set ( $first = $entity.charAt(0) )
+#set ( $first = $first.toLowerCase($first) )
+#set ( $entityName = $first + $entity.substring(1, $strEnd) )
+#set ( $lowerEntity = $entity.toLowerCase() )
+/**
+ * ${entity}接口实现.
+ * <p></p>
+ *
+ * @author ${author}
+ * @since ${date} ${cfg.time}
+ */
+@Service
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>(), ${table.serviceName} {
+
+}
+#else
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+    @Resource
+    ExceptionManager exceptionManager;
+
+    @Resource
+    ${entity}Mapper ${entityName}Mapper;
+
+    /**
+     * 保存${entity}.
+     * <p></p>
+     * @author KingBoy
+     * @since 2018-08-07 18:35:44
+     *
+     */
+    @Override
+    public ${entity}VO save(${entity}DTO ${entityName}DTO) {
+        ${entity} ${entityName} = MapperUtils.mapperBean(${entityName}DTO, ${entity}.class);
+        boolean success = this.save(${entityName});
+        if (!success) {
+            throw exceptionManager.create("资源创建失败!");
+        }
+        return MapperUtils.mapperBean(${entityName}, ${entity}VO.class);
+    }
+
+    /**
+     * 更新${entity}, 更新不为Null的字段.
+     * <p></p>
+     * @author KingBoy
+     * @since 2018-08-07 18:36:34
+     *
+     */
+    @Override
+    public ${entity}VO update(${entity}DTO ${entityName}DTO) {
+        if (${entityName}DTO.getId() == null) {
+            throw exceptionManager.create("您所更新的资源ID不存在!");
+        }
+        ${entity} ${entityName} = MapperUtils.mapperBean(${entityName}DTO, ${entity}.class);
+        boolean success = this.updateById(${entityName});
+        if (!success) {
+            throw exceptionManager.create("资源更新失败!");
+        }
+        return MapperUtils.mapperBean(${entityName}, ${entity}VO.class);
+    }
+
+    /**
+     * 删除${entity}.
+     * <p>
+     *     根据项目配置进行硬删除或者软删除
+     * </p>
+     * @author KingBoy
+     * @since 2018-08-07 18:37:30
+     *
+     */
+    @Override
+    public void remove(Long id) {
+        boolean success = this.removeById(id);
+        if (!success) {
+            throw exceptionManager.create("资源删除失败!");
+        }
+    }
+
+    /**
+     * 通过ID查询${entity}.
+     * <p></p>
+     * @author KingBoy
+     * @since 2018-08-07 18:40:06
+     *
+     */
+    public ${entity}VO get(Long id) {
+        ${entity} ${entityName} = this.getById(id);
+        if (${entityName} == null) {
+            throw exceptionManager.create("您所查询的资源不存在!");
+        }
+        ${entity}VO ${entityName}VO = MapperUtils.mapperBean(${entityName}, ${entity}VO.class);
+        return ${entityName}VO;
+    }
+
+    /**
+    * 根据分页和条件进行查询.
+    * <p>
+    *     条件为空时，查询全部
+    * </p>
+    * @author KingBoy
+    * @since 2018-08-07 18:40:50
+    *
+    */
+    @Override
+    public IPage<${entity}VO> list(IPage page, ${entity}DTO ${entityName}DTO) {
+        ${entity} ${entityName} = MapperUtils.mapperBean(${entityName}DTO, ${entity}.class);
+        IPage result = ${entityName}Mapper.selectPage(page, new QueryWrapper<${entity}>().setEntity(${entityName}));
+        PageConverter.convert(result, ${entity}VO.class);
+        return result;
+    }
+
+}
+#end
