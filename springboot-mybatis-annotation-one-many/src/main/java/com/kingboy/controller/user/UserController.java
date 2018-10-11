@@ -31,7 +31,7 @@ public class UserController {
     }
 
     /**
-     * 查询某个地址的所有用户
+     * 查询某个用户的所有车辆信息
      * @param id
      * @return
      */
